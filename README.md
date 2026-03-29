@@ -121,3 +121,10 @@ U = A#
 ## License
 
 Feel free to use and modify this project as you wish!
+
+## Modifications
+- Improved bellows response and smoothing  
+- Enhanced sound consistency when holding multiple keys  
+- Fixed merge conflicts in harmonium.html  
+- Cleaned and stabilized code structure  
+- Improved overall responsiveness of the app  
