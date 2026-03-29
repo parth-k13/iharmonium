@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html>
-HEAD
-
 <head>
     <title>i-harmonium</title>
     <style>
@@ -14,11 +12,7 @@ HEAD
             cursor: pointer;
         }
 
-        .piano {
-            display: flex;
-            justify-content: center;
-            margin: 40px;
-        }
+        .piano { display: flex; justify-content: center; margin: 40px; }
 
         .key {
             border: 2px solid #f4e4bc;
@@ -48,7 +42,7 @@ HEAD
         .active {
             background: #d4a373 !important;
             color: #2c1a12;
-            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
         }
 
         #bellows-meter {
@@ -75,32 +69,14 @@ HEAD
     </style>
 </head>
 
-=======
-<head>
-    <title>i-harmonium</title>
-    <style>
-        body { background: #2c1a12; color: #f4e4bc; font-family: serif; text-align: center; padding: 20px; cursor: pointer; }
-        .piano { display: flex; justify-content: center; margin: 40px; }
-        .key { border: 2px solid #f4e4bc; width: 60px; height: 200px; margin: 2px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; position: relative; border-radius: 0 0 5px 5px; }
-        .black { background: #1a100b; color: white; height: 120px; width: 40px; margin-left: -20px; margin-right: -20px; z-index: 2; border-color: #555; }
-        .active { background: #d4a373 !important; color: #2c1a12; box-shadow: inset 0 5px 10px rgba(0,0,0,0.5); }
-        #bellows-meter { width: 400px; height: 12px; border: 1px solid #f4e4bc; margin: 20px auto; border-radius: 10px; overflow: hidden; }
-        #fill { width: 0%; height: 100%; background: #d4a373; transition: width 0.05s linear; }
-        #status-tip { font-style: italic; font-size: 0.9em; color: #8a7a6a; }
-    </style>
-</head>
->>>>>>> 113965623f4d6ebc4671eea28c32b5bcc4931fa7
 <body>
     <h1>i-harmonium</h1>
     <p id="status-tip">Click anywhere once to activate sound, then hold keys and <b>push lid down</b></p>
 
-<<<<<<< HEAD
     <div id="bellows-meter">
         <div id="fill"></div>
     </div>
-=======
-    <div id="bellows-meter"><div id="fill"></div></div>
->>>>>>> 113965623f4d6ebc4671eea28c32b5bcc4931fa7
+
     <h3 id="angle-display">Lid Angle: 0°</h3>
 
     <div class="piano">
@@ -120,8 +96,6 @@ HEAD
     </div>
 
     <script>
-<<<<<<< HEAD
-
         const samples = {
             'a': 'sounds/c3.wav',
             'w': 'sounds/cs3.wav',
@@ -141,19 +115,14 @@ HEAD
         let airPressure = 0;
         let audioCtx, masterGain, bellows = 0, lastAngle = 0;
         let delayNode, feedbackNode;
-=======
-        const notes = {'a':261.63, 'w':277.18, 's':293.66, 'e':311.13, 'd':329.63, 'f':349.23, 't':369.99, 'g':392.00, 'y':415.30, 'h':440.00, 'u':466.16, 'j':493.88, 'k':523.25};
-        let audioCtx, masterGain, bellows = 0, lastAngle = 0;
->>>>>>> 113965623f4d6ebc4671eea28c32b5bcc4931fa7
         let activeOscs = {};
 
-        // Automatic initialization on first interaction
         const initAudio = () => {
             if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             masterGain = audioCtx.createGain();
             masterGain.gain.value = 0;
- HEAD
+
             delayNode = audioCtx.createDelay();
             delayNode.delayTime.value = 0.3;
 
@@ -162,27 +131,22 @@ HEAD
 
             masterGain.connect(audioCtx.destination);
             masterGain.connect(delayNode);
-
             delayNode.connect(audioCtx.destination);
-
             delayNode.connect(feedbackNode);
             feedbackNode.connect(delayNode);
 
-            masterGain.connect(audioCtx.destination);
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
             document.getElementById('status-tip').innerText = "Audio Active - Ready to play";
         };
 
         window.addEventListener('mousedown', initAudio);
         window.addEventListener('keydown', initAudio);
 
-        // Connect to Python Bridge
         const socket = new WebSocket('ws://localhost:8765');
+
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
- HEAD
-            let rawAngle = data.angle;
-            angle = lastAngle + (rawAngle - lastAngle) * 0.15;
+
+            let angle = lastAngle + (data.angle - lastAngle) * 0.15;
             document.getElementById('angle-display').innerText = `Lid Angle: ${angle.toFixed(1)}°`;
 
             if (lastAngle !== 0) {
@@ -192,25 +156,13 @@ HEAD
                     airPressure = Math.min(1.5, Math.max(0, airPressure));
                 } else {
                     bellows *= 0.98;
-
-            const angle = data.angle;
-            document.getElementById('angle-display').innerText = `Lid Angle: ${angle.toFixed(1)}°`;
-            
-            if (lastAngle !== 0) {
-                let change = lastAngle - angle; 
-                if (change > 0.05) {
-                    bellows = Math.min(1.0, bellows + (change * 1.5)); 
-                } else {
-                    bellows *= 0.98; 
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
                 }
             }
+
             lastAngle = angle;
         };
 
-        // Natural air decay
         setInterval(() => {
- HEAD
             airPressure *= 0.97;
             bellows = airPressure;
 
@@ -220,16 +172,10 @@ HEAD
                 audio.volume = bellows;
             });
 
-
-            bellows *= 0.95; 
-            document.getElementById('fill').style.width = (bellows * 100) + "%";
-            if (masterGain) masterGain.gain.setTargetAtTime(bellows, audioCtx.currentTime, 0.05);
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
         }, 50);
 
         window.onkeydown = (e) => {
             const key = e.key.toLowerCase();
- HEAD
 
             if (samples[key] && !activeOscs[key]) {
 
@@ -238,7 +184,6 @@ HEAD
                 audio.volume = Math.min(1, bellows);
                 audio.play();
 
-                // air used by the reed when a key is pressed
                 airPressure -= 0.05;
                 airPressure = Math.max(0, airPressure);
 
@@ -246,32 +191,11 @@ HEAD
 
                 const el = document.getElementById(`key-${key}`);
                 if (el) el.classList.add('active');
-
-            if (notes[key] && !activeOscs[key] && audioCtx) {
-                const osc1 = audioCtx.createOscillator();
-                const osc2 = audioCtx.createOscillator();
-                osc1.type = 'sawtooth';
-                osc2.type = 'square';
-                osc1.frequency.value = notes[key];
-                osc2.frequency.value = notes[key] + 1.5; // Harmonic richness
-                
-                const g = audioCtx.createGain();
-                g.gain.value = 0.25; 
-                
-                osc1.connect(g); osc2.connect(g);
-                g.connect(masterGain);
-                
-                osc1.start(); osc2.start();
-                activeOscs[key] = {oscs: [osc1, osc2], gain: g};
-                const el = document.getElementById(`key-${key}`);
-                if(el) el.classList.add('active');
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
             }
         };
 
         window.onkeyup = (e) => {
             const key = e.key.toLowerCase();
- HEAD
 
             if (activeOscs[key]) {
                 activeOscs[key].pause();
@@ -281,19 +205,8 @@ HEAD
 
                 const el = document.getElementById(`key-${key}`);
                 if (el) el.classList.remove('active');
-
-            if (activeOscs[key]) {
-                activeOscs[key].oscs.forEach(o => o.stop());
-                delete activeOscs[key];
-                const el = document.getElementById(`key-${key}`);
-                if(el) el.classList.remove('active');
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
             }
         };
     </script>
 </body>
- HEAD
-
-
- 113965623f4d6ebc4671eea28c32b5bcc4931fa7
 </html>
